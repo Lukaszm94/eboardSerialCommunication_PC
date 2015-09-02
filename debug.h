@@ -13,28 +13,44 @@ public:
     {
         cout<<std::endl;
     }
-
+    //int
     static inline void print(int number)
     {
         cout<<number;
     }
+    static inline void println(int number)
+    {
+        print(number);
+        endl();
+    }
 
+    //char
+    static inline void print(char c)
+    {
+        cout<<c;
+    }
+
+    static inline void println(char c)
+    {
+        cout<<c;
+    }
+
+    //str
     static inline void print(char *str)
     {
         cout<<str;
     }
-
     static inline void println(char *str)
     {
         print(str);
         endl();
     }
 
-    static inline void println(int number)
-    {
-        print(number);
-        endl();
-    }
+
+
+
+
+
 
 
 };

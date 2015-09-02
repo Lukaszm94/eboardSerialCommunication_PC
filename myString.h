@@ -36,7 +36,6 @@ public:
     void append(char letter)
     {
         *(buffer + index) = letter;
-        cout<<"Added letter "<<letter<<" to buffer"<<endl;
         incrementBufferEndPointer();
         *(buffer + index) = Cstr_terminator;
     }
@@ -104,12 +103,9 @@ private:
 
     void updateEndPointer()
     {
-        cout<<"Time to update buff end ptr: ";
         while(*(buffer + index) != Cstr_terminator ) {
-                cout<<"++ ";
             incrementBufferEndPointer();
         }
-        cout<<endl;
     }
 
 };

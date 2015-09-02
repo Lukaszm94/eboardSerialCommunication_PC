@@ -57,7 +57,6 @@ public:
 
     char* toString()
     {
-        //TODO
         int index = 0;
         if(integer > 9) {
             outputBuffer[index] = (char)(integer/10) + '0';

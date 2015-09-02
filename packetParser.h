@@ -5,9 +5,15 @@
 #include "myString.h"
 #include "debug.h"
 
+#define Cstr_terminator '\0'
+
 class PacketParser
 {
 public:
+    PacketParser()
+    {
+        parsedBufferPointer = NULL;
+    }
 
     bool correctInputBuffer(MyString *buff)
     {
@@ -33,8 +39,9 @@ public:
 
         int endCharacterPosition = buff->find('E');
         if((endCharacterPosition > 0) && buff->at(0) == 's' && (buff->size() > endCharacterPosition + 1 )) {
-            parsedPacket = coreParse(buff);
-            return true;
+            if(coreParse(buff)) {
+                    return true;
+            }
         }
         return false;
     }
@@ -48,32 +55,64 @@ public:
 
 private:
     Packet parsedPacket;
+    char* parsedBufferPointer;
 
-    Packet coreParse(MyString *buff)
+    bool coreParse(MyString *buff)
     {
         int textLength = buff->size(), integer = 0, frac = 0;
 
-        char* inputBuffer = buff->toCstr();
-        char* currentIndex = NULL;
+        parsedBufferPointer = buff->toCstr();
+
         //Ia
-        currentIndex = shiftToDigit(inputBuffer);
-        currentIndex = extractInt(currentIndex, &integer);
-        currentIndex = shiftToDigit(inputBuffer);
-        currentIndex = extractInt(currentIndex, &frac);
-        parsedPacket.Ia = sFloat(integer, frac);
-
+        parsedPacket.Ia = getNextsFloat();
         //Ib
-        //TODO create getNextsFloat function
+        parsedPacket.Ib = getNextsFloat();
+        parsedPacket.Ta = getNextsFloat();
+        parsedPacket.Tb = getNextsFloat();
+        parsedPacket.Tc = getNextsFloat();
+        parsedPacket.Td = getNextsFloat();
+        parsedPacket.Te = getNextsFloat();
+        parsedPacket.Tf = getNextsFloat();
+
+        shiftToDigit();
+        char checksum = extractInt() + '0';
+        Debug::print("Checksum received: ");
+        Debug::println(checksum);
+        if(checksum != parsedPacket.generateChecksumDigit()) {
+            Debug::println("Checksum incorrect!");
+            return false;
+        }
+
+        return true;
     }
 
-    char* shiftToDigit(char* str)
+    //always moves at least by one char
+    void shiftToDigit()
     {
-        //TODO
+        do {
+            parsedBufferPointer++;
+        }
+        while(!isdigit(*parsedBufferPointer) && *parsedBufferPointer != Cstr_terminator);
+    }
+    //starts extractin from location str
+    int extractInt()
+    {
+        int number = 0;
+        while(*parsedBufferPointer != Cstr_terminator && isdigit(*parsedBufferPointer)) {
+            number = number * 10 + *parsedBufferPointer - '0';
+            parsedBufferPointer++;
+        }
+        return number;
     }
 
-    char* extractInt(char* str, int *number)
+    sFloat getNextsFloat()
     {
-        //TODO
+        sFloat result;
+        shiftToDigit();
+        result.setInteger(extractInt());
+        shiftToDigit();
+        result.setFractional(extractInt());
+        return result;
     }
 
 };

@@ -19,10 +19,8 @@ public:
 
     char* getPacketCharString(Packet pack)
     {
-        buff.append('X');
         buff.append('s');
         buff.append("Ia");
-        cout<<"String from packet Ia: "<<pack.Ia.toString()<<endl;
         buff.append(pack.Ia);
         buff.append("Ib");
         buff.append(pack.Ib);

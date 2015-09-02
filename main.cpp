@@ -8,8 +8,13 @@
 
 void printPacket(Packet pack)
 {
-
-
+    Debug::print("Ia: ");
+    Debug::print(pack.Ia.toString());
+    Debug::print(", Ib: ");
+    Debug::print(pack.Ib.toString());
+    Debug::print(", .... , Tf: ");
+    Debug::print(pack.Tf.toString());
+    Debug::endl();
 }
 
 
@@ -24,6 +29,10 @@ int main()
     uartSender tx;
     Packet packet;
     packet.setRandomValues();
+    packet.Ia = sFloat(12, 3);
+    packet.Ib = sFloat(8, 7);
+    packet.Tf = sFloat(98, 5);
+
 
     cout<<"Sending: ";
     printPacket(packet);
@@ -33,11 +42,9 @@ int main()
     Packet receivedPacket;
 
     for(int i = 0, packetLength = strlen(packetStr); i < packetLength; i++) {
-        cout<<packetStr[i]<<" ";
         rx.receiveNewChar(packetStr[i]);
         if(rx.parseBuffer()) {
             receivedPacket = rx.getPacket();
-            cout<<"New packet received!"<<endl;
         }
     }
     cout<<endl;
